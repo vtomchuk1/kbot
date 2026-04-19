@@ -18,15 +18,15 @@ Kbot — це простий Telegram-бот, створений на мові G
     git clone https://github.com/vtomchuk1/kbot.git
     cd kbot
 
-2. **Ініціалізуйте модулі
+2. **Ініціалізуйте модулі**
     ```bash
     go mod init 
     go mod tidy
 
-3. **Налаштуйте змінну оточення
+3. **Налаштуйте змінну оточення**
     ```bash
     export TELE_TOKEN="ваш_токен_тут"
 
-4. **Запуск проекту
+4. **Запуск проекту**
     ```bash
     go run main.go kbot
