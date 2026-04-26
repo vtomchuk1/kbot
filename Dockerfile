@@ -1,4 +1,4 @@
-FROM golang:1.26 as builder
+FROM quay.io/projectquay/golang:1.26 as builder
 
 RUN apt-get update && apt-get install -y make build-essential
 
@@ -12,4 +12,5 @@ FROM scratch
 WORKDIR /
 COPY --from=builder /go/src/app/kbot .
 COPY --from=alpine:latest /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-ENTRYPOINT ["./kbot"]
+# ENTRYPOINT ["./kbot"]
+CMD ["go", "test", "-v", "./..."]
