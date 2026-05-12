@@ -41,12 +41,14 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - kbot
           env:
-          - name: TELE_TOKEN  # ОСЬ ТУТ має бути TELE_TOKEN, бо його чекає Go-код
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.secret.name }} # Візьме "kbot" з values.yaml
-                key: {{ .Values.secret.key }}
+            - name: TELE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: {{ .Values.secret.key }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
