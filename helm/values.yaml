@@ -13,8 +13,7 @@ image:
 
 secret:
   name: "kbot"
-  env: "1890413708:AAGpE4mXOw3jcc54W_XrU8slmZJ9ag6pzpg"
-  key: "token"
+  key: "1890413708:AAGpE4mXOw3jcc54W_XrU8slmZJ9ag6pzpg"
 
 serviceAccount:
   create: false

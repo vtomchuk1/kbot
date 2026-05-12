@@ -47,6 +47,12 @@ spec:
               secretKeyRef:
                 key: {{ .Values.secret.key }}
                 name: {{ .Values.secret.name }}
+                env:
+          - name: TELE_TOKEN  # ОСЬ ТУТ має бути TELE_TOKEN, бо його чекає Go-код
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret.name }} # Візьме "kbot" з values.yaml
+                key: {{ .Values.secret.key }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
