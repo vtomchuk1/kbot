@@ -42,12 +42,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: {{ .Values.secret.env }}
-            valueFrom:
-              secretKeyRef:
-                key: {{ .Values.secret.key }}
-                name: {{ .Values.secret.name }}
-                env:
           - name: TELE_TOKEN  # ОСЬ ТУТ має бути TELE_TOKEN, бо його чекає Go-код
             valueFrom:
               secretKeyRef:
