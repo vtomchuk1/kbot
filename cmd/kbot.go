@@ -50,7 +50,7 @@ to quickly create a Cobra application.`,
 			log.Print(payload)
 
 			if payload == "/start" {
-				err = c.Send(fmt.Sprintf("Привіт! Я Kbot. Версія %s", appVersion))
+				err = c.Send(fmt.Sprintf("Привіт! Я Kbot - віктуальний помічник. Версія %s", appVersion))
 			} else {
 				err = c.Send(payload)
 			}
