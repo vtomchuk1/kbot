@@ -28,6 +28,7 @@ clean:
 	- rm -rf kbot || echo "Файл не знайдено, пропускаю"
 # 	- docker rm ${CONTAINER_ID} || echo "Контейнер не знайдено, пропускаю"
 	- docker rmi ${IMAGE_NAME} || echo "Образ не знайдено, пропускаю"
+	- rm -rf helm-0.1.0.tgz || echo "Файл не знайдено, пропускаю"
 
 get:
 	go get
@@ -54,3 +55,28 @@ windows:
 
 macos:
 	$(MAKE) TARGETOS=darwin build
+
+helm-check:
+	helm lint ./helm
+
+helm-package:
+	helm package ./helm
+
+helm-install:
+	helm install kbot ./helm
+
+helm-uninstall:
+	helm uninstall kbot
+
+helm-upload:
+	gh release upload v1.0.9 helm-0.1.0.tgz
+
+helm-generate-secret:
+	kubectl create secret generic kbot \
+  --from-literal=token="TELE_TOKEN" \
+  --namespace=kbot \
+  --dry-run=client -o yaml | \
+	(go env GOPATH)/bin/kubeseal \
+  --controller-name=sealed-secrets-operator \
+  --controller-namespace=sealed-secrets \
+  --format yaml > templates/sealedsecret.yaml

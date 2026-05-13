@@ -10,7 +10,7 @@ image:
   repository: keks8953/kbot.git
   tag: "v1-2958e4c-amd64"
   arch: amd64
-
+# TELE_TOKEN
 secret:
   name: "kbot"
   key: "token"
