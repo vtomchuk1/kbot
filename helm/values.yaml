@@ -4,21 +4,18 @@
 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
-
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
   repository: keks8953/kbot.git
-  tag: "v1-ebf3e9b-amd64"
+  tag: "v1.0.9-de79140"
   arch: amd64
 # TELE_TOKEN
 secret:
   name: "kbot"
   key: "token"
-
 serviceAccount:
   create: false
   name: ""
-
 service:
   type: ClusterIP
   port: 80
