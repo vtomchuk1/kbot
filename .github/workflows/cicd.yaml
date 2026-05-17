@@ -6,7 +6,7 @@ on: push
 
 permissions:
   contents: write
-  
+
 # блок задач який налаштовано на запуск завдання на новій ВМ з останньою версією ubuntu
 jobs:
   ci:
@@ -41,7 +41,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0 
-    - run: echo "VERSION=$(git describe --tags --abbrev=0)-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+    - run: echo "VERSION=v1-$(git rev-parse --short HEAD)-amd64" >> $GITHUB_ENV
 
     - uses: mikefarah/yq@master
       with:
