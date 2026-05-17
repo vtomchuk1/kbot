@@ -15,6 +15,9 @@ jobs:
   ci:
     name: CI
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 # перший крок задачі дозволить запускати на ранері репозиторій із скриптами для виконання дії. 
     steps:
       - name: Checkout
@@ -44,7 +47,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-      
+
     steps:
     - uses: actions/checkout@v3
       with:
