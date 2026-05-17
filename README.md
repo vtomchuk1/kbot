@@ -18,7 +18,7 @@ graph TD
     %% Опис життєвого циклу
     Dev[💻 Розробник: Push у develop]:::developer -->|Trigger| GH(🐙 GitHub: KBOT-CICD):::github
 
-    subgraph GitHub Actions: Job CI
+    subgraph "GitHub Actions: Job CI"
         GH --> CI_Check[1. Checkout репозиторію]:::action
         CI_Check --> CI_Test[2. Run Tests: make test]:::action
         CI_Test --> CI_Auth[3. Login to GHCR.io]:::action
@@ -27,7 +27,7 @@ graph TD
 
     CI_Build -->|Upload Image| GHCR(📦 GitHub Packages: ghcr.io):::registry
 
-    subgraph GitHub Actions: Job CD (needs: CI)
+    subgraph "GitHub Actions: Job CD (needs: CI)"
         CI_Build -->|Success| CD_Check[1. Checkout репозиторію]:::action
         CD_Check --> CD_Ver[2. Генерація версії по SHA комміту]:::action
         CD_Ver --> CD_YQ[3. Оновлення helm/values.yaml через yq]:::action
@@ -39,7 +39,7 @@ graph TD
     %% Блок GitOps (Argo CD)
     GH -.->|Webhook / Polling| Argo[🐙 Argo CD Controller]:::cluster
     
-    subgraph К3d Локальний Кластер
+    subgraph "K3d Локальний Кластер"
         Argo -->|Порівняння стану| Sync{Маніфести збігаються?}:::cluster
         Sync -->|Ні: OutOfSync| Deploy[Застосування оновленого helm/values.yaml]:::cluster
         Sync -->|Так: Synced| Fine[Кластер в актуальному стані]:::cluster
