@@ -2,10 +2,10 @@
 name: KBOT-CICD
 
 # Визначимо подію, яка запустить виконання workflow процесу.
-on: push
-# on:
-#   push:
-#     branches: [ "develop" ]
+# on: push
+on:
+  push:
+    branches: [ "develop" ]
 
 permissions:
   contents: write
