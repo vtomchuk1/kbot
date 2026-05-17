@@ -1,9 +1,11 @@
-APP?=$(shell basename $(shell git remote get-url origin))
-REGESTRY?=keks8953
-VERSION?=v1-$(shell git rev-parse --short HEAD)
+APP?=kbot
+# APP?=$(shell basename $(shell git remote get-url origin))
+# REGESTRY?=keks8953
+REGESTRY?=ghcr.io/vtomchuk1
+VERSION?=v1.1.0-$(shell git rev-parse --short HEAD)
 TARGETOS?=$(shell uname -s | tr '[:upper:]' '[:lower:]')
 TARGETARCH?=$(shell dpkg --print-architecture)
-IMAGE_NAME?=${REGESTRY}/${APP}:${VERSION}-${TARGETARCH}
+IMAGE_NAME?=${REGESTRY}/${APP}:${VERSION}-${TARGETOS}-${TARGETARCH}
 # CONTAINER_ID=$(shell docker ps -a -q --filter "ancestor=$(IMAGE_NAME)")
 
 argo:

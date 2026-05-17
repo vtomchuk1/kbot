@@ -3,6 +3,9 @@ name: KBOT-CICD
 
 # Визначимо подію, яка запустить виконання workflow процесу.
 on: push
+# on:
+#   push:
+#     branches: [ "develop" ]
 
 permissions:
   contents: write
@@ -24,12 +27,13 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build&Push
         env:
           APP: "kbot"
-          REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }}
+          REGISTRY: ghcr.io/${{ github.repository_owner }}
         run: make image push
   
   cd:
@@ -37,6 +41,10 @@ jobs:
     needs: ci
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+      
     steps:
     - uses: actions/checkout@v3
       with:
