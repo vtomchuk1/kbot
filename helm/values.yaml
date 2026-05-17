@@ -8,7 +8,7 @@ replicaCount: 1
 image:
   registry: ghcr.io
   repository: keks8953/kbot
-  tag: "v1-a86158a-amd64"
+  tag: "v1-387aec6-linux-amd64"
   os: linux
   arch: amd64
 # TELE_TOKEN
