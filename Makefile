@@ -83,7 +83,7 @@ helm-generate-secret:
   --from-literal=token="TELE_TOKEN" \
   --namespace=kbot \
   --dry-run=client -o yaml | \
-	(go env GOPATH)/bin/kubeseal \
-  --controller-name=sealed-secrets-operator \
-  --controller-namespace=sealed-secrets \
+    $(go env GOPATH)/bin/kubeseal \
+  --controller-name=sealed-secrets-controller \
+  --controller-namespace=kube-system \
   --format yaml > templates/sealedsecret.yaml
