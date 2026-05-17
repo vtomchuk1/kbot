@@ -6,6 +6,11 @@ TARGETARCH?=$(shell dpkg --print-architecture)
 IMAGE_NAME?=${REGESTRY}/${APP}:${VERSION}-${TARGETARCH}
 # CONTAINER_ID=$(shell docker ps -a -q --filter "ancestor=$(IMAGE_NAME)")
 
+argo:
+	kubectl -n default get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+	@echo ""
+	kubectl port-forward service/my-argo-cd-argocd-server -n default 8080:443
+
 format:
 	gofmt -s -w ./
 
