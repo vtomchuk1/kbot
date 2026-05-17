@@ -13,7 +13,7 @@ import (
 	"gopkg.in/telebot.v4"
 )
 
-var appVersion = "0.2.0"
+var appVersion = "0.3.0"
 
 var (
 	TeleToken = os.Getenv("TELE_TOKEN")

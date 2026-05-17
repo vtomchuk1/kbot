@@ -3,6 +3,10 @@ name: KBOT-CICD
 
 # Визначимо подію, яка запустить виконання workflow процесу.
 on: push
+
+permissions:
+  contents: write
+  
 # блок задач який налаштовано на запуск завдання на новій ВМ з останньою версією ubuntu
 jobs:
   ci:
