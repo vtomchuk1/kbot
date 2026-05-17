@@ -8,7 +8,7 @@ replicaCount: 1
 image:
   registry: ghcr.io
   repository: vtomchuk1/kbot
-  tag: "v1.1.0-ef08052-linux-amd64"
+  tag: "v1.1.0-98706d8-linux-amd64"
   os: linux
   arch: amd64
 # TELE_TOKEN
