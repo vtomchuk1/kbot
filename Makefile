@@ -8,10 +8,14 @@ TARGETARCH?=$(shell dpkg --print-architecture)
 IMAGE_NAME?=${REGESTRY}/${APP}:${VERSION}-${TARGETOS}-${TARGETARCH}
 # CONTAINER_ID=$(shell docker ps -a -q --filter "ancestor=$(IMAGE_NAME)")
 
-argo:
-	kubectl -n default get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-	@echo ""
-	kubectl port-forward service/my-argo-cd-argocd-server -n default 8080:443
+# argo:
+# 	kubectl -n default get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+# 	@echo ""
+# 	kubectl port-forward service/my-argo-cd-argocd-server -n default 8080:443
+
+# jenkins:
+# 	kubectl exec --namespace default -it svc/my-jenkins -c jenkins -- /bin/cat /run/secrets/additional/chart-admin-password && echo
+# 	kubectl --namespace default port-forward svc/my-jenkins 8080:8080
 
 format:
 	gofmt -s -w ./
@@ -52,16 +56,16 @@ push:
 	docker push ${IMAGE_NAME}
 
 linux:
-	$(MAKE) TARGETOS=linux build
+	$(MAKE) TARGETOS=linux
 
 arm:
-	$(MAKE) TARGETARCH=arm64 build
+	$(MAKE) TARGETARCH=arm64
 
 windows:
-	$(MAKE) TARGETOS=windows build
+	$(MAKE) TARGETOS=windows
 
 macos:
-	$(MAKE) TARGETOS=darwin build
+	$(MAKE) TARGETOS=darwin
 
 helm-check:
 	helm lint ./helm
