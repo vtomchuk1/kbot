@@ -58,13 +58,16 @@ push:
 linux:
 	$(MAKE) TARGETOS=linux
 
-arm:
+arm64:
 	$(MAKE) TARGETARCH=arm64
+
+amd64:
+	$(MAKE) TARGETARCH=amd64
 
 windows:
 	$(MAKE) TARGETOS=windows
 
-macos:
+darwin:
 	$(MAKE) TARGETOS=darwin
 
 helm-check:
