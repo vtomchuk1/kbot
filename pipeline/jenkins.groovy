@@ -62,14 +62,14 @@ pipeline {
         stage('build') {
             steps {
                 echo "Building binary started"
-                sh "make ${params.ARCH} ${params.OS} build"
+                sh "make build TARGETARCH=${params.ARCH} TARGETOS=${params.OS}"
             }
         }
 
         stage('image') {
             steps {
                 echo "Building image started"
-                sh "make image"
+                sh "make image TARGETARCH=${params.ARCH} TARGETOS=${params.OS}"
             }
         }
 
@@ -88,7 +88,7 @@ pipeline {
         
         stage('push image') {
             steps {
-              sh "make push"
+              sh "make push TARGETARCH=${params.ARCH} TARGETOS=${params.OS}"
             }
         } 
     }
