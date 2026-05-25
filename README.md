@@ -1,3 +1,9 @@
+# pre commit hook інструкція використання
+
+```
+curl -sL https://raw.githubusercontent.com/vtomchuk1/kbot/main/install.sh | sh
+```
+
 # Kbot
 
 Kbot — це простий Telegram-бот, створений на мові Go з використанням бібліотеки [Cobra](https://github.com/spf13/cobra) для CLI та [telebot](https://github.com/yanzay/telebot) для взаємодії з API Telegram.
