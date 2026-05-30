@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-kbot-to-otel
+  namespace: monitoring # Створюємо там, де лежить колектор
+spec:
+  podSelector:
+    matchLabels:
+      # Мітка вашого пода колектора (можна глянути через kubectl get pod -n monitoring --show-labels)
+      app.kubernetes.io/name: opentelemetry-collector 
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector: {} # Дозволяє трафік з усіх namespace (або вкажіть конкретний)
+    ports:
+    - protocol: TCP
+      port: 4317

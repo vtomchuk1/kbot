@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: otel-collector-kbot
+  namespace: monitoring
+  labels:
+    release: kube-prometheus # Має збігатися з міткою вашого Prometheus-оператора
+spec:
+  endpoints:
+  - targetPort: 8889 # Вказуємо порт на пряму (так надійніше, якщо в сервісі немає імені порту)
+    interval: 10s
+    path: /metrics
+  namespaceSelector:
+    matchNames:
+    - monitoring
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-collector
