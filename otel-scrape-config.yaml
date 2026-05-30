@@ -1,0 +1,8 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ScrapeConfig
+metadata:
+  name: otel-collector-scrape
+  namespace: monitoring
+spec:
+  staticConfigs:
+    - targets: ['otel-collector-opentelemetry-collector.monitoring.svc.cluster.local:8889']

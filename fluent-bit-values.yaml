@@ -1,0 +1,11 @@
+config:
+  outputs: |
+    [OUTPUT]
+        Name          loki
+        Match         *
+        Host          loki.monitoring.svc.cluster.local
+        Port          3100
+        LogLevel      info
+        LineFormat    json
+        Labels        job=fluentbit
+        Auto_Kubernetes_Labels on
