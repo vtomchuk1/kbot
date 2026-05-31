@@ -1,3 +1,15 @@
+# для ручного дебагу було створено декілька файлів конфігів
+
+* [Додаткові налаштування скрейпінгу Prometheus](/prometheus-additional-scrape.yaml)
+* [Helm Values для OpenTelemetry Collector](/otel-values.yaml)
+* [Конфігурація скрейпінгу OpenTelemetry](/otel-scrape-config.yaml)
+* [ServiceMonitor для Kbot](/otel-kbot-monitor.yaml)
+* [Helm Values для Fluent Bit](/fluent-bit-values.yaml)
+* [Мережева політика (NetworkPolicy) Kbot до OTel](/allow-kbot-to-otel.yaml)
+
+# [основний файл конфігурації моніторингу](/dev-monitoring.yaml)
+
+
 # Створіть секрет з токеном вашого бота
 ```
 kubectl create secret generic kbot-secrets --from-literal=tele-token='ВАШ_ТЕЛЕГРАМ_ТОКЕН' -n default
