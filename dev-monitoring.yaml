@@ -1,0 +1,246 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default
+---
+# =====================================================================
+# 1. КОНФІГУРАЦІЯ OPENTELEMETRY COLLECTOR
+# =====================================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+  namespace: monitoring
+data:
+  otel-collector-config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    exporters:
+      prometheus:
+        endpoint: "0.0.0.0:8889" # Порт для збору метрик за допомогою Prometheus
+    processors:
+      batch: {}
+    service:
+      telemetry:
+        metrics:
+          readers:
+            - pull:
+                exporter:
+                  prometheus:
+                    host: 0.0.0.0
+                    port: 8881 # Змінено з 8888 на 8881, щоб уникнути CrashLoopBackOff
+      pipelines:
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [prometheus]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      containers:
+        - name: otel-collector
+          image: otel/opentelemetry-collector-contrib:0.78.0
+          command: ["/otelcol-contrib", "--config=/etc/otel-collector-config.yaml"]
+          ports:
+            - containerPort: 4317
+            - containerPort: 8889
+            - containerPort: 8881
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/otel-collector-config.yaml
+              subPath: otel-collector-config.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: otel-collector-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+  namespace: monitoring
+spec:
+  ports:
+    - name: grpc
+      port: 4317
+      targetPort: 4317
+    - name: prom-metrics
+      port: 8889
+      targetPort: 8889
+  selector:
+    app: otel-collector
+---
+# =====================================================================
+# 2. GRAFANA LOKI (Сховище логів)
+# =====================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loki
+  template:
+    metadata:
+      labels:
+        app: loki
+    spec:
+      containers:
+        - name: loki
+          image: grafana/loki:2.8.2
+          args: ["-config.file=/etc/loki/local-config.yaml", "-log.level=error"]
+          ports:
+            - containerPort: 3100
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+  namespace: monitoring
+spec:
+  ports:
+    - port: 3100
+      targetPort: 3100
+  selector:
+    app: loki
+---
+# =====================================================================
+# 3. GRAFANA (Візуалізація з налаштованими Loki та Prometheus)
+# =====================================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: monitoring
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki.monitoring.svc.cluster.local:3100
+        jsonData:
+          maxLines: 1000
+          
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://otel-collector.monitoring.svc.cluster.local:8889
+        isDefault: true
+        jsonData:
+          httpMethod: POST
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:9.4.3
+          ports:
+            - containerPort: 3002
+          env:
+            - name: GF_AUTH_ANONYMOUS_ENABLED
+              value: "true"
+            - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+              value: "Admin"
+            - name: GF_AUTH_DISABLE_LOGIN_FORM
+              value: "true"
+            - name: GF_FEATURE_TOGGLES_ENABLE
+              value: "traceqlEditor"
+            - name: GF_SERVER_HTTP_PORT
+              value: "3002"
+          volumeMounts:
+            - name: ds-volume
+              mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
+              subPath: datasources.yaml
+      volumes:
+        - name: ds-volume
+          configMap:
+            name: grafana-datasources
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  ports:
+    - port: 3002
+      targetPort: 3002
+  selector:
+    app: grafana
+---
+# =====================================================================
+# 4. ВЛАСТИВО СЕРВІС KBOT (Ваш проект)
+# =====================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kbot
+  namespace: default
+  labels:
+    app: kbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kbot
+  template:
+    metadata:
+      labels:
+        app: kbot
+    spec:
+      containers:
+        - name: kbot
+          image: vtomchuk1/kbot:v1.0.0-otel
+          imagePullPolicy: Always
+          command: ["/manager"] 
+          args:
+            - "kbot"
+            - "--otel-addr=otel-collector.monitoring.svc.cluster.local:4317"
+            - "--service-name=kbot-service"
+          env:
+            - name: TELE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: kbot-secrets
+                  key: tele-token
