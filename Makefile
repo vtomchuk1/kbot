@@ -10,6 +10,12 @@ TARGETARCH?=$(shell dpkg --print-architecture)
 IMAGE_NAME?=${REGESTRY}/${APP}:${VERSION}-${TARGETOS}-${TARGETARCH}
 # CONTAINER_ID=$(shell docker ps -a -q --filter "ancestor=$(IMAGE_NAME)")
 
+prometheus:
+	kubectl port-forward svc/kube-prometheus-kube-prome-prometheus 9090:9090 -n monitoring
+
+grafana:
+	kubectl port-forward svc/kube-prometheus-grafana 3200:80 -n monitoring
+
 argo:
 	kubectl -n default get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 	@echo ""
