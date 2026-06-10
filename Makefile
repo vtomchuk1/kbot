@@ -94,12 +94,16 @@ helm-uninstall:
 helm-upload:
 	gh release upload v1.0.9 helm-0.1.0.tgz
 
-helm-generate-secret:
-	kubectl create secret generic kbot \
-  --from-literal=token="TELE_TOKEN" \
-  --namespace=kbot \
-  --dry-run=client -o yaml | \
-    $(go env GOPATH)/bin/kubeseal \
-  --controller-name=sealed-secrets-controller \
-  --controller-namespace=kube-system \
-  --format yaml > templates/sealedsecret.yaml
+sops-encrypt-secret:
+	@echo "Generating and encrypting Kubernetes Secret with SOPS..."
+	@kubectl create secret generic kbot \
+		--from-literal=token="$${TELE_TOKEN}" \
+		--namespace=kbot \
+		--dry-run=client -o yaml > flux/secret-tele-token.yaml
+	sops --encrypt --in-place \
+		--encrypted-regex '^(data|stringData)$$' \
+		flux/secret-tele-token.yaml
+	@echo "Encrypted secret saved to flux/secret-tele-token.yaml"
+
+sops-decrypt-secret:
+	@sops --decrypt flux/secret-tele-token.yaml

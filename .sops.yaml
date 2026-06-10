@@ -1,0 +1,4 @@
+creation_rules:
+  - path_regex: \.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    gcp_kms: projects/GOOGLE_PROJECT/locations/global/keyRings/sops-flux/cryptoKeys/sops-key
