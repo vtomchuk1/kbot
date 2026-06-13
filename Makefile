@@ -92,7 +92,7 @@ helm-uninstall:
 	helm uninstall kbot
 
 helm-upload:
-	gh release upload v1.0.9 helm-0.1.0.tgz
+	gh release upload v1.1.1 helm-0.1.0.tgz
 
 sops-encrypt-secret:
 	@echo "Generating and encrypting Kubernetes Secret with SOPS..."
